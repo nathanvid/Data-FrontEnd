@@ -1,24 +1,20 @@
 // Écran C : Comment ça marche.
 //
 // Page statique : elle ne lit ni le cookie ni la base, Next.js la prépare donc au build.
-// Les deux îlots interactifs (parcours animé, vrai ou faux) sont des composants client
-// sans aucune donnée : leur contenu est écrit en dur. La page décrit les 3 workflows en
+// Le parcours animé est un composant client sans aucune donnée : son contenu est écrit
+// en dur. La page décrit les 3 workflows en
 // vocabulaire métier, sans rien dire des conditions secrètes (quels faits, quelles
 // recommandations). Les compteurs de la classe en direct viendront en phase 2.
 //
 // Parti pris visuel : une page de documentation plutôt qu'une page vitrine. Traits fins,
 // coins à peine arrondis, tableaux et listes à lignes plutôt que grilles de cartes.
 import { ParcoursMail } from "@/components/ParcoursMail";
-import { QuizRegles } from "@/components/QuizRegles";
 
 const SOMMAIRE = [
   { id: "parcours", libelle: "Parcours d'un mail" },
   { id: "relais", libelle: "Le relais" },
   { id: "regles-ia", libelle: "Règles ou IA" },
   { id: "regles", libelle: "Règles du jeu" },
-  { id: "quiz", libelle: "Vrai ou faux" },
-  { id: "tableau", libelle: "Ce que vous voyez" },
-  { id: "votre-workflow", libelle: "Votre workflow" },
 ];
 
 type Regle = { titre: string; resume: string; detail?: string };
@@ -78,36 +74,6 @@ const WORKFLOWS = [
     prend: "Les réponses dont l'heure est venue",
     depose: "L'heure d'envoi",
     pastille: "bg-emerald-500",
-  },
-];
-
-type Concept = { titre: string; simulateur: string; vous: string };
-
-const CONCEPTS: Concept[] = [
-  {
-    titre: "Déclencheur",
-    simulateur: "Un mail reçu lance WF 1 ; une horloge lance WF 2 et WF 3.",
-    vous: "Quel événement ou quel horaire démarre votre automatisation ?",
-  },
-  {
-    titre: "File d'attente",
-    simulateur: "Le travail attend dans la base : une panne ne perd rien.",
-    vous: "Où le travail en cours est-il stocké entre deux étapes ?",
-  },
-  {
-    titre: "Règles avant l'IA",
-    simulateur: "Inscription, joignabilité, rythme : vérifiés sans IA.",
-    vous: "Quelles décisions tiennent en un simple « si… alors » ?",
-  },
-  {
-    titre: "Une IA par rôle",
-    simulateur: "L'évaluateur juge, le personnage rédige.",
-    vous: "Pouvez-vous découper la tâche de l'IA en rôles testables ?",
-  },
-  {
-    titre: "Traçabilité",
-    simulateur: "Chaque étape est horodatée, d'où « Mes échanges ».",
-    vous: "Comment saurez-vous où en est chaque élément, et pourquoi il a échoué ?",
   },
 ];
 
@@ -291,76 +257,6 @@ export default function PageFonctionnement() {
                 </div>
               </li>
             </ul>
-          </Section>
-
-          <Section
-            id="quiz"
-            numero={5}
-            titre="Vrai ou faux"
-            chapo="Quatre affirmations pour vérifier les règles avant votre prochain mail."
-          >
-            <QuizRegles />
-          </Section>
-
-          <Section
-            id="tableau"
-            numero={6}
-            titre="Ce que ce tableau de bord vous montre"
-          >
-            <div className="grid border border-slate-200 sm:grid-cols-2 sm:divide-x sm:divide-slate-200">
-              <ListeVisibilite
-                titre="Visible"
-                marque="+"
-                classe="text-emerald-700"
-                items={[
-                  "Les étapes de chaque mail et leur heure, dans « Mes échanges ».",
-                  "Le contenu d'un échange, une fois la réponse dans votre boîte.",
-                  "Les coulisses : documents consultés, jetons, coût en dollars, temps de calcul.",
-                ]}
-              />
-              <ListeVisibilite
-                titre="Jamais envoyé à votre navigateur"
-                marque="–"
-                classe="text-rose-700"
-                items={[
-                  "Les conditions qui décident des réponses.",
-                  "Les fiches des personnages.",
-                  "Les informations que vous n'avez pas encore obtenues.",
-                ]}
-              />
-            </div>
-            <p className="text-xs text-slate-500">
-              Avant l&apos;envoi de la réponse, seule l&apos;heure prévue
-              s&apos;affiche. Les échanges les plus anciens n&apos;ont pas été
-              mesurés.
-            </p>
-          </Section>
-
-          <Section
-            id="votre-workflow"
-            numero={7}
-            titre="Pour concevoir votre workflow"
-            chapo="Cinq principes du simulateur, et la question à vous poser pour chacun."
-          >
-            <ol className="border-t border-slate-900">
-              {CONCEPTS.map((c, i) => (
-                <li
-                  key={c.titre}
-                  className="grid gap-x-6 gap-y-1 border-b border-slate-200 py-3 sm:grid-cols-[10rem_1fr_1fr]"
-                >
-                  <p className="font-medium text-slate-900">
-                    <span className="mr-2 font-mono text-xs text-slate-400">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {c.titre}
-                  </p>
-                  <p className="text-slate-500">{c.simulateur}</p>
-                  <p className="border-l-2 border-indigo-500 pl-3 font-medium text-slate-900">
-                    {c.vous}
-                  </p>
-                </li>
-              ))}
-            </ol>
           </Section>
         </div>
       </div>
@@ -559,36 +455,6 @@ function Frise({
       <div className="mt-1 h-1.5 bg-slate-100">
         <div className={`h-1.5 bg-slate-900 ${largeur}`} />
       </div>
-    </div>
-  );
-}
-
-function ListeVisibilite({
-  titre,
-  marque,
-  classe,
-  items,
-}: {
-  titre: string;
-  marque: string;
-  classe: string;
-  items: string[];
-}) {
-  return (
-    <div className="p-4">
-      <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-slate-400">
-        {titre}
-      </p>
-      <ul className="space-y-1.5">
-        {items.map((it) => (
-          <li key={it} className="flex gap-2 text-slate-700">
-            <span className={`font-mono font-semibold ${classe}`} aria-hidden>
-              {marque}
-            </span>
-            {it}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
