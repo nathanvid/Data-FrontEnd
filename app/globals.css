@@ -8,3 +8,15 @@
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Apparition douce du détail d'une étape (page Comment ça marche) */
+@keyframes apparition {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
