@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Thème clair uniquement : l'écran est aussi projeté en salle */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
