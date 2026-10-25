@@ -68,3 +68,9 @@ export const ISSUES: Record<Issue, { titre: string; explication: string }> = {
       "il n'a pas été transmis au personnage.",
   },
 };
+
+// Documents que le personnage avait sous les yeux pour vous répondre
+export const NIVEAUX_DOCUMENT: Record<"facade" | "metier", string> = {
+  facade: "Document public",
+  metier: "Document interne",
+};

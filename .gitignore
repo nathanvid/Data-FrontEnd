@@ -42,3 +42,6 @@ next-env.d.ts
 
 # modèle de configuration, sans secret
 !.env.example
+
+# Fichiers d envoi des liens personnels (contiennent les jetons)
+/envois/
