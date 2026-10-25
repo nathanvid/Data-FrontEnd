@@ -475,7 +475,28 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      // Seule vue lue par le site (administration) : la note de l'enquête
+      v_note_enquete: {
+        Row: {
+          classe: string | null;
+          groupe: string | null;
+          nom: string | null;
+          prenom: string | null;
+          email: string | null;
+          mails: number | null;
+          faits: number | null;
+          enveloppe: boolean | null;
+          atteints: number | null;
+          generiques: number | null;
+          refus: number | null;
+          chatbot_evite: boolean | null;
+          ajustement: number | null;
+          note_sur_10: number | null;
+          note_sur_20: number | null;
+          commentaire: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       calcul_send_at: { Args: never; Returns: string };
