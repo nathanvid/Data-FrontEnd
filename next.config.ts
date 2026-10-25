@@ -1,22 +1,10 @@
 import type { NextConfig } from "next";
 
+// Le build de production utilise webpack (`next build --webpack`, voir package.json) :
+// depuis Next 16.3.3, Turbopack ne tourne plus sur les serveurs de build de Hostinger.
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
-  experimental: {
-    // Compile Tailwind dans le processus Next au lieu de sous-processus reliés par socket :
-    // l'environnement de build de Hostinger empêche ces sous-processus de se connecter.
-    turbopackPluginRuntimeStrategy: "workerThreads",
-  },
-  turbopack: {
-    rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
-    },
-  },
 };
 
 export default nextConfig;
