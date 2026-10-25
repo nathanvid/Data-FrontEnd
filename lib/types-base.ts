@@ -149,6 +149,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      envois_liens: {
+        Row: {
+          email: string;
+          envoye_at: string;
+          etudiant_id: string;
+          id: number;
+          mailgun_id: string | null;
+        };
+        Insert: {
+          email: string;
+          envoye_at?: string;
+          etudiant_id: string;
+          id?: never;
+          mailgun_id?: string | null;
+        };
+        Update: {
+          email?: string;
+          envoye_at?: string;
+          etudiant_id?: string;
+          id?: never;
+          mailgun_id?: string | null;
+        };
+        Relationships: [];
+      };
       etudiants: {
         Row: {
           actif: boolean;

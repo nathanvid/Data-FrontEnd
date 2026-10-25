@@ -17,6 +17,12 @@ import {
   motDePasseCorrect,
 } from "@/lib/admin/session";
 import { envoyerMail } from "@/lib/admin/mailgun";
+import {
+  OBJET_LIEN,
+  TAG_LIEN,
+  adresseSite,
+  corpsLien,
+} from "@/lib/admin/liens";
 
 export type EtatAction = { ok?: string; erreur?: string } | null;
 
@@ -214,4 +220,91 @@ export async function envoyerIndice(
     return { erreur: e instanceof Error ? e.message : "Envoi impossible." };
   }
   return { ok: `Indice envoyé à ${etudiant.email}.` };
+}
+
+// ---------------------------------------------------------------------
+// Liens personnels du tableau de bord
+// ---------------------------------------------------------------------
+// cible = "manquants" : tous les étudiants actifs de la classe qui n'ont encore rien reçu.
+// cible = <id étudiant> : un seul, avec renvoi = "oui" s'il l'a déjà reçu.
+// La liste est recalculée ici à partir de envois_liens, jamais reprise du formulaire :
+// une page restée ouverte ou un double clic ne renvoient pas le lien une seconde fois.
+export async function envoyerLiens(
+  _etat: EtatAction,
+  formData: FormData,
+): Promise<EtatAction> {
+  await exigerAdmin();
+  const classe = texte(formData, "classe");
+  const cible = texte(formData, "cible");
+  const renvoi = texte(formData, "renvoi") === "oui";
+  const essai = texte(formData, "essai") === "oui";
+  const s = supabaseServeur();
+
+  let requete = s
+    .from("etudiants")
+    .select("id, prenom, nom, email, jeton")
+    .eq("actif", true)
+    .eq("classe", classe)
+    .order("nom");
+  if (cible !== "manquants") requete = requete.eq("id", cible);
+  const { data: etudiants, error } = await requete;
+  if (error) return { erreur: "Lecture des étudiants impossible." };
+
+  const { data: envois, error: erreurEnvois } = await s
+    .from("envois_liens")
+    .select("etudiant_id")
+    .in(
+      "etudiant_id",
+      etudiants.map((e) => e.id),
+    );
+  if (erreurEnvois)
+    return {
+      erreur:
+        "Journal des envois introuvable : appliquez d'abord simulateur/migration_envois_liens.sql.",
+    };
+  const servis = new Set(envois.map((e) => e.etudiant_id));
+  const aEnvoyer = etudiants.filter((e) => renvoi || !servis.has(e.id));
+  if (aEnvoyer.length === 0)
+    return { ok: "Rien à envoyer : tout le monde a déjà reçu son lien." };
+
+  const site = await adresseSite();
+  let envoyes = 0;
+  for (const e of aEnvoyer) {
+    let mailgunId: string;
+    try {
+      mailgunId = await envoyerMail({
+        a: `${e.prenom} ${e.nom} <${e.email}>`,
+        sujet: OBJET_LIEN,
+        texte: corpsLien({ prenom: e.prenom, jeton: e.jeton, site }),
+        tag: TAG_LIEN,
+        essai,
+      });
+    } catch (err) {
+      // On s'arrête au premier refus : inutile d'insister avec une clé ou un domaine invalide
+      refresh();
+      return {
+        erreur: `${envoyes} envoyé(s), puis échec pour ${e.email} : ${err instanceof Error ? err.message : "envoi impossible"}.`,
+      };
+    }
+    if (!essai) {
+      const { error: erreurJournal } = await s
+        .from("envois_liens")
+        .insert({ etudiant_id: e.id, email: e.email, mailgun_id: mailgunId });
+      if (erreurJournal) {
+        // Le mail est parti mais n'est pas noté : on s'arrête plutôt que de risquer un doublon
+        console.error("envois_liens :", erreurJournal.message);
+        refresh();
+        return {
+          erreur: `Lien envoyé à ${e.email} mais non noté dans le journal : envoi interrompu après ${envoyes + 1} mail(s).`,
+        };
+      }
+    }
+    envoyes++;
+  }
+  refresh();
+  return {
+    ok: essai
+      ? `${envoyes} mail(s) acceptés par Mailgun en mode test (aucun délivré).`
+      : `${envoyes} lien(s) envoyé(s).`,
+  };
 }

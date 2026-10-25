@@ -8,6 +8,7 @@ const ONGLETS = [
   { href: "/admin", libelle: "Vue d'ensemble", exact: true },
   { href: "/admin/mails", libelle: "Mails" },
   { href: "/admin/progression", libelle: "Progression" },
+  { href: "/admin/liens", libelle: "Liens" },
 ];
 
 export default function LayoutProtege({ children }: LayoutProps<"/admin">) {
