@@ -1,6 +1,11 @@
 // Tous les textes affichés aux étudiants, en vocabulaire métier et au vouvoiement.
 // Un seul fichier pour pouvoir relire et corriger le ton d'un coup.
-import type { EtatPersonnage, Issue, StatutEnvoi } from "./types-tableau";
+import type {
+  EtatPersonnage,
+  Issue,
+  Personnage,
+  StatutEnvoi,
+} from "./types-tableau";
 
 export const ETATS: Record<EtatPersonnage, { libelle: string; aide: string }> =
   {
@@ -20,7 +25,21 @@ export const ETATS: Record<EtatPersonnage, { libelle: string; aide: string }> =
       libelle: "A répondu",
       aide: "Vous avez reçu au moins une réponse de ce personnage.",
     },
+    fini: {
+      libelle: "Fini",
+      aide: "Vous avez découvert tout ce que ce personnage pouvait vous apprendre.",
+    },
   };
+
+// Libellé de la pastille : après une réponse, le nombre de faits débloqués
+// plutôt que « A répondu » (sans le total, qui renseignerait sur ce qu'il reste).
+export function libelleEtat(p: Personnage): string {
+  if (p.etat !== "a_repondu") return ETATS[p.etat].libelle;
+  if (p.faits_decouverts === 0) return "Aucun fait débloqué";
+  return p.faits_decouverts === 1
+    ? "1 fait débloqué"
+    : `${p.faits_decouverts} faits débloqués`;
+}
 
 export const STATUTS: Record<StatutEnvoi, string> = {
   en_attente: "Reçu, en file d'attente",

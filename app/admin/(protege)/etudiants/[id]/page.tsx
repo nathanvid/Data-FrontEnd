@@ -29,7 +29,7 @@ const ETATS = {
     couleur: "bg-amber-50 text-amber-800",
   },
   atteint: { libelle: "A répondu", couleur: "bg-emerald-50 text-emerald-800" },
-  complet: { libelle: "Tous ses faits", couleur: "bg-emerald-600 text-white" },
+  complet: { libelle: "Fini", couleur: "bg-emerald-600 text-white" },
 } as const;
 
 async function Fiche({
@@ -179,7 +179,14 @@ async function Fiche({
                       <p className="text-xs text-slate-500">{p.role}</p>
                     </td>
                     <td className="px-3 py-2">
-                      <Pastille {...ETATS[etat]} />
+                      <Pastille
+                        {...ETATS[etat]}
+                        libelle={
+                          etat === "atteint"
+                            ? `${trouves.length} / ${sesFaits.length} fait${trouves.length > 1 ? "s" : ""} débloqué${trouves.length > 1 ? "s" : ""}`
+                            : ETATS[etat].libelle
+                        }
+                      />
                     </td>
                     <td className="px-3 py-2 text-xs text-slate-600">
                       {p.porte_entree

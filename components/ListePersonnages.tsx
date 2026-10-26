@@ -1,13 +1,14 @@
 // Les personnages sous forme de fiches : lisible sur téléphone (où le graphe devient petit)
 // et par les lecteurs d'écran. Donne aussi l'adresse mail à utiliser. Composant SERVEUR.
 import type { Personnage, Recommandation } from "@/lib/types-tableau";
-import { ETATS } from "@/lib/libelles";
+import { ETATS, libelleEtat } from "@/lib/libelles";
 
 const PASTILLES = {
   verrouille: "bg-slate-100 text-slate-600",
   accessible: "bg-indigo-50 text-indigo-700",
   contacte: "bg-amber-50 text-amber-800",
   a_repondu: "bg-emerald-50 text-emerald-800",
+  fini: "bg-emerald-600 text-white",
 } as const;
 
 export function ListePersonnages({
@@ -40,7 +41,7 @@ export function ListePersonnages({
               <span
                 className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${PASTILLES[p.etat]}`}
               >
-                {ETATS[p.etat].libelle}
+                {libelleEtat(p)}
               </span>
             </div>
             <p className="mt-2 break-all font-mono text-xs text-slate-600">

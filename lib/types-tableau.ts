@@ -3,7 +3,7 @@
 // Toute modification de la fonction SQL doit être reportée ici.
 
 export type EtatPersonnage =
-  "verrouille" | "accessible" | "contacte" | "a_repondu";
+  "verrouille" | "accessible" | "contacte" | "a_repondu" | "fini";
 
 export type Issue =
   | "reponse"

@@ -8,7 +8,7 @@ import type {
   Personnage,
   Recommandation,
 } from "@/lib/types-tableau";
-import { ETATS } from "@/lib/libelles";
+import { ETATS, libelleEtat } from "@/lib/libelles";
 
 const LARGEUR = 160;
 const HAUTEUR = 74;
@@ -40,6 +40,7 @@ const COULEURS: Record<
   accessible: { fond: "#ffffff", bord: "#6366f1", texte: "#1e293b" },
   contacte: { fond: "#fffbeb", bord: "#f59e0b", texte: "#1e293b" },
   a_repondu: { fond: "#ecfdf5", bord: "#059669", texte: "#1e293b" },
+  fini: { fond: "#d1fae5", bord: "#047857", texte: "#1e293b" },
 };
 
 // Position de repli si un personnage est ajouté en base sans être placé ici
@@ -165,8 +166,11 @@ export function CarteEnquete({
               fontWeight={600}
               fill={c.bord}
             >
-              {ETATS[p.etat].libelle}
-              {p.porte_entree ? " · porte d'entrée" : ""}
+              {libelleEtat(p)}
+              {/* Une fois la réponse reçue, la mention ne sert plus et ne tiendrait pas */}
+              {p.porte_entree && p.etat !== "a_repondu" && p.etat !== "fini"
+                ? " · porte d'entrée"
+                : ""}
             </text>
           </g>
         );
