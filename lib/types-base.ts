@@ -511,6 +511,7 @@ export type Database = {
           faits: number | null;
           enveloppe: boolean | null;
           atteints: number | null;
+          debloques: number | null;
           generiques: number | null;
           refus: number | null;
           chatbot_evite: boolean | null;
