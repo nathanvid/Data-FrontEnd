@@ -303,6 +303,7 @@ export type Database = {
           commentaire: string | null;
           etudiant_id: string;
           note_presentation: number | null;
+          plancher_finale: number | null;
         };
         Insert: {
           ajustement?: number | null;
@@ -310,6 +311,7 @@ export type Database = {
           commentaire?: string | null;
           etudiant_id: string;
           note_presentation?: number | null;
+          plancher_finale?: number | null;
         };
         Update: {
           ajustement?: number | null;
@@ -317,6 +319,7 @@ export type Database = {
           commentaire?: string | null;
           etudiant_id?: string;
           note_presentation?: number | null;
+          plancher_finale?: number | null;
         };
         Relationships: [];
       };
@@ -523,6 +526,7 @@ export type Database = {
           note_sur_20: number | null;
           commentaire: string | null;
           note_presentation: number | null;
+          note_finale: number | null;
         };
         Relationships: [];
       };
