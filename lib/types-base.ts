@@ -302,18 +302,21 @@ export type Database = {
           chatbot_evite: boolean | null;
           commentaire: string | null;
           etudiant_id: string;
+          note_presentation: number | null;
         };
         Insert: {
           ajustement?: number | null;
           chatbot_evite?: boolean | null;
           commentaire?: string | null;
           etudiant_id: string;
+          note_presentation?: number | null;
         };
         Update: {
           ajustement?: number | null;
           chatbot_evite?: boolean | null;
           commentaire?: string | null;
           etudiant_id?: string;
+          note_presentation?: number | null;
         };
         Relationships: [];
       };
@@ -519,6 +522,7 @@ export type Database = {
           note_sur_10: number | null;
           note_sur_20: number | null;
           commentaire: string | null;
+          note_presentation: number | null;
         };
         Relationships: [];
       };
